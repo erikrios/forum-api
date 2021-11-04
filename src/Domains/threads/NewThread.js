@@ -1,5 +1,6 @@
 class NewThread {
   constructor(userId, payload) {
+    this._verifyUserId(userId);
     this._verifyPayload(payload);
 
     const { title, body } = payload;
@@ -7,6 +8,16 @@ class NewThread {
     this.userId = userId;
     this.title = title;
     this.body = body;
+  }
+
+  _verifyUserId(userId) {
+    if (!userId) {
+      throw new Error('NEW_THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
+    }
+
+    if (typeof userId !== 'string') {
+      throw new Error('NEW_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    }
   }
 
   _verifyPayload({ title, body }) {
