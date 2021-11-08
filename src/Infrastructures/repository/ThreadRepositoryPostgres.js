@@ -34,6 +34,39 @@ class ThreadRepositoryPostgres extends ThreadRepository {
       throw new NotFoundError(`Thread with id ${threadId} not found.`);
     }
   }
+
+  async getThread(threadId) {
+    const threadQuery = {
+      text: `SELECT 
+      threads.id AS id,
+      threads.title AS title,
+      threads.body AS body,
+      threads.created_at AS date,
+      users.username AS username
+      FROM threads INNER JOIN users ON threads.owner = users.id
+      WHERE threads.id = $1`,
+      values: [threadId],
+    };
+
+    const threadResult = await this._pool.query(threadQuery);
+    const threadDetails = threadResult.rows[0];
+
+    const commentQuery = {
+      text: `SELECT
+      comments.id AS id,
+      users.username AS username,
+      comments.created_at AS date,
+      comments.content AS content,
+      comments.is_delete AS isDelete
+      FROM comments INNER JOIN users on comments.owner = users.id
+      WHERE comments.thread_id = $1`,
+      values: [threadId],
+    };
+
+    const commentResult = await this._pool.query(commentQuery);
+    threadDetails.comments = commentResult.rows;
+    return threadDetails;
+  }
 }
 
 module.exports = ThreadRepositoryPostgres;
