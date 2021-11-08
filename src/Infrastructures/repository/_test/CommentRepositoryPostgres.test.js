@@ -208,7 +208,7 @@ describe('CommentRepositoryPostgres', () => {
   });
 
   describe('deleteComment function', () => {
-    it('should set is_deleted to true', async () => {
+    it('should set is_delete to true', async () => {
       // Arrange
       await UsersTableTestHelper.addUser({
         id: 'user-123',
