@@ -59,7 +59,7 @@ class ThreadRepositoryPostgres extends ThreadRepository {
       comments.content AS content,
       comments.is_delete AS "isDelete"
       FROM comments INNER JOIN users on comments.owner = users.id
-      WHERE comments.thread_id = $1`,
+      WHERE comments.thread_id = $1 ORDER BY date ASC`,
       values: [threadId],
     };
 
