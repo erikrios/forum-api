@@ -1,13 +1,16 @@
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
+const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
 const NewThread = require('../../../Domains/threads/entities/NewThread');
 const AddedThread = require('../../../Domains/threads/entities/AddedThread');
 const pool = require('../../database/postgres/pool');
 const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
+const CommentDetails = require('../../../Domains/comments/entities/CommentDetails');
 
 describe('ThreadRepositoryPostgres', () => {
   afterEach(async () => {
+    await CommentsTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
   });
@@ -115,6 +118,39 @@ describe('ThreadRepositoryPostgres', () => {
       // Assert
       await expect(threadRepositoryPostgres.isThreadExists('thread-123'))
         .resolves.not.toThrow(NotFoundError);
+    });
+  });
+
+  describe('getThread function', () => {
+    it('should return thread details correctly', async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({
+        id: 'user-123',
+        password: 'password',
+        fullname: 'dicoding indonesia',
+        username: 'dicoding',
+      });
+
+      await ThreadsTableTestHelper.addThread({
+        id: 'thread-123',
+        title: 'thread title',
+        body: 'thread body',
+        owner: 'user-123',
+      });
+
+      await CommentsTableTestHelper.addComment('comment-123', 'user-123', 'thread-123', 'my comment');
+
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
+
+      // Action
+      const threadDetails = await threadRepositoryPostgres.getThread('thread-123');
+      // Assert
+      expect(threadDetails.id).toEqual('thread-123');
+      expect(threadDetails.title).toEqual('thread title');
+      expect(threadDetails.body).toEqual('thread body');
+      expect(threadDetails.date).toBeTruthy();
+      expect(threadDetails.username).toEqual('dicoding');
+      expect(threadDetails.comments).toHaveLength(1);
     });
   });
 });
