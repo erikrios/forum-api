@@ -44,12 +44,14 @@ describe('an ThreadDetails entities', () => {
           username: 'johndoe',
           date: '2021-08-08T07:22:33.555Z',
           content: 'sebuah comment',
+          isDelete: false,
         }),
         new CommentDetails({
           id: 'comment-yksuCoxM2s4MMrZJO-qVD',
           username: 'dicoding',
           date: '2021-08-08T07:26:21.338Z',
           content: '**komentar telah dihapus**',
+          isDelete: true,
         }),
       ],
     };
