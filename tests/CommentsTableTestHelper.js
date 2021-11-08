@@ -12,6 +12,15 @@ const CommentsTableTestHelper = {
     return result.rows;
   },
 
+  async addComment(commentId, userId, threadId, content) {
+    const query = {
+      text: 'INSERT INTO comments(id, content, owner, thread_id) VALUES($1, $2, $3, $4) RETURNING id, content, owner',
+      values: [commentId, content, userId, threadId],
+    };
+
+    await pool.query(query);
+  },
+
   async cleanTable() {
     await pool.query('DELETE FROM comments WHERE 1=1');
   },
