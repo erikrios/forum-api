@@ -39,7 +39,7 @@ describe('HTTP server', () => {
   });
 
   describe('when GET /', () => {
-    it('should return 200 and hello world', async () => {
+    it('should return 200 and Hello, World!', async () => {
       // Arrange
       const server = await createServer({});
 
