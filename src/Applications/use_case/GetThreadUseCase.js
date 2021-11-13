@@ -4,7 +4,7 @@ class GetThreadUseCase {
   }
 
   async execute(threadId) {
-    this._threadRepository.isThreadExists(threadId);
+    await this._threadRepository.isThreadExists(threadId);
     const threadDetails = await this._threadRepository.getThread(threadId);
     threadDetails.comments.forEach((part, index, commentArrays) => {
       if (part.isDelete) {
